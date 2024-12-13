@@ -1,0 +1,31 @@
+{
+  "name": "lerniac",
+  "version": "1.0.0",
+  "description": "This is backend server to Lerniac StudentComputer Based Test API",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "cbt",
+    "API",
+    "waec",
+    "exam"
+  ],
+  "author": "learnuel Techologies",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.5.1",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "express-handlebars": "^8.0.1",
+    "express-winston": "^4.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.8.4",
+    "nanoid": "^5.0.9",
+    "winston-mongodb": "^6.0.0",
+    "zod": "^3.24.1"
+  }
+}
