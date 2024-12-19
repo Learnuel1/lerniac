@@ -1,11 +1,9 @@
-
 exports.notFound = (_req, res, _next) => {
   const err = new Error("Route Not Found");
   err.status = 404;
   logger.error(err, {service:"error"});
   res.status(err.status).json({ error: err.message });
 };
-
 
 exports.errorHandler = (err, _req, res, _next) => {
   logger.error(err,{service:"error"});

@@ -2,7 +2,6 @@ const { default: mongoose, connect } = require("mongoose");
 const logger = require("../../logger");
 const config = require("../env");  
 
- 
 exports.MongoDB = async () => {
   try {
     mongoose.set("strictQuery", true);
