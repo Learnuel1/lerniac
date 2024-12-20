@@ -5,6 +5,7 @@ module.exports = {
       try {
 
         Schemas[schema].parse(req.body); 
+        next()
       } catch (error) {
         next(error)
       }

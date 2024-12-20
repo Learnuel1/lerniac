@@ -1,6 +1,6 @@
 const { hashSync } = require("bcryptjs");
 const logger = require("../logger");
-const { userExistByMail, userExistByType } = require("../services");
+const { userExistByMail, userExistByType, createAccount } = require("../services");
 const { META } = require("../utils/actions");
 const { generateStrongPassword, isStrongPassword, uniqueIdGen, shortIdGen } = require("../utils/generator");
 const config = require("../config/env");
@@ -27,9 +27,8 @@ exports.defaultAdminAccount = async () => {
       lastName: CONFIG.APP_NAME,
       phoneNumber: config.ADMIN_NUMBER,
       type: CONSTANTS.ACCOUNT_TYPE_OBJ.admin, 
-      accountId: shortIdGen(12),
+      accountId: shortIdGen(17),
     } 
-    console.log(info)
     let account = await createAccount(info);
     if(!account) return logger.info("Admin Account creation failed", {
       service: META.ACCOUNT,
@@ -40,7 +39,7 @@ exports.defaultAdminAccount = async () => {
     logger.info('Admin Account created successfully', {
       service: META.ACCOUNT,
     }); 
-    console.log(password)
+    console.log(`Admin password: ${password}`)
      // email admin login info
     //  const result = await registrationMailHandler(info.email, "Account creation", CONFIG.APP_NAME, "admin", `Admin Password:${password}`);
     //  if (result.error) {

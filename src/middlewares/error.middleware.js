@@ -1,3 +1,8 @@
+const { ZodError } = require("zod");
+const logger = require("../logger");
+const { JsonWebTokenError } = require("jsonwebtoken");
+const { default: mongoose } = require("mongoose");
+
 exports.notFound = (_req, res, _next) => {
   const err = new Error("Route Not Found");
   err.status = 404;

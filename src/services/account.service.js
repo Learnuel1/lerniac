@@ -21,3 +21,24 @@ exports.type = async (type) => {
     return{error}
   }
 }
+ exports.create = async (info) => {
+  try {
+    return await AccountModel.create({...info})
+  } catch (error) {
+    return {error}
+  }
+ }
+ exports.existById = async (accountId) => {
+  try {
+      return await AccountModel.findOne({_id:accountId});
+  } catch (error) {
+    return{error}
+  }
+}
+exports.existByToken =async (refreshToken) => {
+  try {
+    return await AccountModel.findOne({refreshToken});
+  } catch (error) {
+    return{error}
+  }
+}

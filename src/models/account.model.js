@@ -20,8 +20,7 @@ const AccountSchema = Schema({
     trim: true,
   },
   otherName: {
-    type: String,
-    required: true,
+    type: String, 
     trim: true,
   },
   email: {
@@ -30,6 +29,10 @@ const AccountSchema = Schema({
     trim: true,
     unique: true,
     index: true,
+  },
+  password: {
+    type: String,
+    required: true,
   },
   phone: {
     type: String,

@@ -5,15 +5,16 @@ exports.ZLoginSchema = z.object({
 password: z.string({
   description: "Account Password",
   required_error: "Password is required",
-})
-.minLength(8),
+}) 
+.min(8),
 email: z.string({
   description: "Account Email",
   required_error: "Email is required",
   invalid_type_error: "Invalid email format"
 })
 .email()
-.minLength(5)
+.min(5)
+.trim(),
 })
 
 exports.ZAccountSchema = z.object({
@@ -22,28 +23,30 @@ exports.ZAccountSchema = z.object({
     required_error: "Account ID is required",
     invalid_type_error: "Invalid Account ID"
   })
-  .minLength(8),
+  .trim()
+  .min(8),
 firstName: z.string({
   description: "First name",
   required_error: "First name is required",
   invalid_type_error: "First name is not in a valid format"
 })
-.minLength(3)
-.isNaN(),
+.trim()
+.min(3)
+.nonempty(),
 lastName: z.string({
   description: "Last name",
   required_error: "Last name is required",
   invalid_type_error: "Last name is not in a valid format"
 })
-.minLength(3)
-.isNaN(),
+.trim()
+.min(3),
 otherName: z.string({
   description: "Last name",
   required_error: "Last name is required",
   invalid_type_error: "Last name is not in a valid format"
 })
-.minLength(3)
-.isNaN()
+.min(3) 
+.trim()
 .optional(),
 profile: z.object({
   id: z.string({
@@ -51,13 +54,15 @@ profile: z.object({
     required_error: "Image ID is required",
     invalid_type_error: "Image ID url is invalid",
   })
-  .isURL(),
+  .trim()
+  .url(),
   url: z.string({
     description: "Image URL",
     required_error: "Image URL is required",
     invalid_type_error: "Image url is invalid",
   })
-  .isURL(),
+  .trim()
+  .url(),
 })
 .optional(),
 email: z.string({
@@ -65,14 +70,16 @@ email: z.string({
   required_error: "Account email is required",
   invalid_type_error: "Email is invalid"
 })
-.isEmail(),
+.email()
+.trim(),
 phone: z.string({
   description: "Account phone number",
   required_error: "Account phone number is required",
   invalid_type_error: "phone number is invalid"
 })
-.minLength(11)
-.maxLength(15),
+.min(11)
+.trim()
+.max(15),
 plan: z.string({
   description: "Account Plan",
   required_error: "Account plan is required",
