@@ -53,6 +53,19 @@ const AccountSchema = Schema({
     enum: CONSTANTS.ACCOUNT_TYPE,
     default: CONSTANTS.ACCOUNT_TYPE_OBJ.student,
   },
+  verified: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  school: {
+    type: String,
+    trim: true,
+  },
+  schoolAbbreviation: {
+    type: String,
+    trim: true
+  }
 }, {timestamps: true});
 const AccountModel = model("Account", AccountSchema);
 module.exports = AccountModel;

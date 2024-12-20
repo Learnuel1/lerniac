@@ -87,3 +87,32 @@ exports.login = async (req, res, next) => {
 		next(error);
 	}
 };
+
+
+exports.logout = async (req, res, next) => {
+	try {
+		let token = req.token; 
+		if (!token)
+			return next(APIError.unauthenticated('You need to login first'));
+		const payload = jwt.decode(token, config.TOKEN_SECRETE);
+		const isUser = await userExistById(new mongoose.Types.ObjectId(payload.id));
+		if (!isUser) return next(APIError.notFound(`user does not exist`));
+		if (isUser?.error) return next(APIError.badRequest(isUser?.error));
+		if (isUser.role === CONSTANTS.ACCOUNT_TYPE_OBJ.student) {
+			isUser.refreshToken = [];
+			isUser.save();
+		} else {
+			const refreshTokenArr = isUser.refreshToken.filter((rt) => rt !== token);
+			isUser.refreshToken = [...refreshTokenArr];
+			isUser.save();
+		}
+		logger.info('Logout successful', { service: META.AUTH });
+		res.clearCookie('grub_ex');
+		res
+			.status(200)
+			.json({ success: true, msg: 'You have successfully logged out' });
+	} catch (error) {
+		// if (error.message === ERROR_FIELD.JWT_EXPIRED) next(APIError.unauthenticated());
+		next(error);
+	}
+};

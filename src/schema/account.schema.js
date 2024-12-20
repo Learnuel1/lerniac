@@ -7,6 +7,7 @@ password: z.string({
   required_error: "Password is required",
 }) 
 .min(8),
+
 email: z.string({
   description: "Account Email",
   required_error: "Email is required",
@@ -15,6 +16,7 @@ email: z.string({
 .email()
 .min(5)
 .trim(),
+
 })
 
 exports.ZAccountSchema = z.object({
@@ -87,6 +89,27 @@ plan: z.string({
 })
 .default("student")
 .isOptional(),
+school: z.string({
+  description: "School name",
+  required_error: "School name is required",
+  invalid_type_error: "Invalid school name"
+}) 
+.min(5)
+.trim()
+.isOptional(),
+schoolAbbreviation: z.string({
+  description: "School abbreviation",
+  required_error: "School abbreviation is required",
+  invalid_type_error: "Invalid School abbreviation"
+}) 
+.min(2)
+.trim()
+.isOptional(),
+verified: z.boolean({
+  description: "Account status",
+  required_error: "Account status is required",
+})
+.default(false),
 type: z.enum(CONSTANTS.ACCOUNT_TYPE)
 .default(CONSTANTS.ACCOUNT_TYPE_OBJ.student)
 })
