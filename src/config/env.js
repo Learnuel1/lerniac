@@ -10,6 +10,8 @@ NODE_ENV: process.env.NODE_ENV,
 MAIL_USER:process.env.MAIL_USER,
 MAIL_PASS:process.env.MAIL_PASS,
 MAIL_USER:process.env.MAIL_USER,
+ADMIN_MAIL:process.env.ADMIN_MAIL,
+ADMIN_NUMBER:process.env.ADMIN_NUMBER,
 
 }
 module.exports = config;
