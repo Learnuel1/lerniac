@@ -25,3 +25,8 @@ exports.verifyToken = async (req, res, next) => {
         next(error)
     }
 }
+const errorMiddleWareModule = require("./error.middleware");
+
+module.exports = {
+  errorMiddleWareModule,
+}

@@ -13,3 +13,4 @@ Account
 - phone            -> String
 - plan             -> [String]
 - refreshToken     -> [String]
+
