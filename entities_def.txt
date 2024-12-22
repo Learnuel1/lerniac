@@ -1,0 +1,15 @@
+Account
+-_id              -> ObjectId
+-accountId        -> String 
+- firstName       -> String 
+- lastName        -> String
+- otherName       -> String
+-type             -> ["admin", "teacher", "student"]
+                     id:  -> String
+                     id:  -> String
+- createdAt        -> Date
+- updatedAt        -> Date
+- email            -> String
+- phone            -> String
+- plan             -> [String]
+- refreshToken     -> [String]
