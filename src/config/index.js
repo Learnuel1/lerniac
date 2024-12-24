@@ -12,4 +12,16 @@ exports.CONSTANTS = {
     teacher: "teacher",
      student: "student"
   },
+  QUESTION_TYPE : ["practical", "theory", "objective"],
+  QUESTION_TYPE_OBJ: {
+    practical:  "practical",
+    theory:     "theory",
+    objective:  "objective",
+  },
+  EXAM_TYPE: ["WAEC", "JAMB", "NECO"],
+  EXAM_TYPE_OBJ : {
+    WAEC: "WAEC",
+  JAMB: "JAMB",
+  NECO: "NECO",
+  },
 }
