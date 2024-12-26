@@ -37,3 +37,10 @@ Question
 - createAt        -> Date
 - updatedAt       -> Date
 
+Temporal
+- _id             -> ObjectId
+- accountId       -> ObjectId
+- id              -> String
+- token           -> [String]
+- createAt        -> Date
+- updatedAt       -> Date
