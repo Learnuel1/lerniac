@@ -1,5 +1,5 @@
 const { compareSync } = require("bcryptjs");
-const { userExistByMail, userExistById, userExistByToken, userExistByPhone } = require("../../services");
+const { userExistByMail, userExistById, userExistByToken, userExistByPhone, createTempToken, findTempTokenById, deleteTempTokenById } = require("../../services");
 const { APIError } = require("../../utils/apiError");
 const { CONSTANTS } = require("../../config");
 const buildRes = require("../../utils/seeData")
@@ -9,7 +9,7 @@ const config = require("../../config/env");
 const { removeAuth } = require("../../utils/seeData");
 const { META } = require("../../utils/actions");
 const { default: mongoose } = require("mongoose");
-const { isValidEmail, isPhoneNumberValid } = require("../../utils/generator");
+const { isValidEmail, isPhoneNumberValid, shortIdGen } = require("../../utils/generator");
 
 exports.login = async (req, res, next) => {
 	try {
@@ -140,20 +140,57 @@ exports.forgetPassword = async (req, res, next) => {
 			email: userExist.email,
 		};
 		const payload = jwt.sign(payload, config.TOKEN_SECRETE, {
-			expiresIn:"30m",
-		});
-		userExist.refreshToken = [...userExist.refreshToken, payload]
-		userExist.save();
+			expiresIn:"10m",
+		}); 
+		const createTemp = await createTempToken({id: shortIdGen(20), token:payload, accountId:userExist._id});
+		if(!createTemp) {
+			logger.info("Token failed to create", {service: META.AUTH})
+			return next(APIError.badRequest("Token failed to create"));
+		}
+		if(createTemp?.error) return next(APIError.badRequest(createTemp.error));
+		logger.info("Token created successfully", {service: META.AUTH});
 		// send recovery email
 		res.status(200).json({msg: "Recovery email sent successfully"})
 	} catch (error) {
 		next(error)
 	}
 }
-
+exports.verifyToken = async (req, res, next) => {
+	try {
+		const {id} = req.body;
+		if(!id) return next(APIError.badRequest("Token is required"));
+		// find token by id
+		const tokenExist = await findTempTokenById(id);
+		if(!tokenExist) return next(APIError.badRequest("Invalid recover Link"));
+		if(tokenExist?.error) return next(APIError.badRequest(tokenExist.error));
+		logger.info("Token retrieved successfully", {service: META.AUTH});
+		jwt.verify(tokenExist.token, config.TOKEN_SECRETE, async(err, decode) =>{
+			if(err){
+				await deleteTempTokenById(id);
+				return next(APIError.unauthorized("Link expired"))
+			}
+		});
+		res.status(200).json({msg: "Link verified successfully"});
+	} catch (error) {
+		next(error)
+	}
+}
 exports.resetPassword = async (req, res, next) => {
 	try {
-		
+		const {id } = req.body;
+		if(!id) return next(APIError.badRequest("Token is required"));
+		// find token by id
+		const tokenExist = await findTempTokenById(id);
+		if(!tokenExist) return next(APIError.badRequest("Invalid recover Link"));
+		if(tokenExist?.error) return next(APIError.badRequest(tokenExist.error));
+		logger.info("Token retrieved successfully", {service: META.AUTH});
+		jwt.verify(tokenExist.token, config.TOKEN_SECRETE, async(err, decode) =>{
+			if(err){
+				await deleteTempTokenById(id);
+				return next(APIError.unauthorized("Link expired"))
+			}
+		});
+		res.status(200).json({msg: "Link verified successfully"});
 		// add strong password validator
 	} catch (error) {
 		next(error)
