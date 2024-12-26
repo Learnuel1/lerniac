@@ -1,5 +1,5 @@
 const { compareSync } = require("bcryptjs");
-const { userExistByMail, userExistById, userExistByToken } = require("../../services");
+const { userExistByMail, userExistById, userExistByToken, userExistByPhone } = require("../../services");
 const { APIError } = require("../../utils/apiError");
 const { CONSTANTS } = require("../../config");
 const buildRes = require("../../utils/seeData")
@@ -88,13 +88,11 @@ exports.login = async (req, res, next) => {
 		next(error);
 	}
 };
-
-
 exports.logout = async (req, res, next) => {
 	try { 
 		const {refreshToken} = req.body;
 		if (!refreshToken)
-			return next(APIError.unauthenticated('You need to login first'));
+			return next(APIError.unauthenticated('Refresh token is required'));
 		const isUser = await userExistByToken(refreshToken);
 		if (!isUser) return next(APIError.unauthenticated());
 		if (isUser?.error) return next(APIError.badRequest(isUser.error));
@@ -117,3 +115,34 @@ exports.logout = async (req, res, next) => {
 		next(error);
 	}
 };
+
+exports.resetPassword = async (req, res, next) => {
+	try {
+		 const info = {}
+		 for (let key in req.body){
+			info[key] = req.body[key];
+			break;
+		 }
+		if(!info) return next(APIError.badRequest("Email or phone is required"));
+		let userExist = await userExistByMail(info?.email);
+		if(!userExist) userExist = await userExistByPhone(info?.phone)
+		if(!userExist) return next(APIError.notFound("Account not found"));
+		logger.info("Account found", {service: META.AUTH})
+		// generate token for recovery link
+		payload = {
+			id: userExist._id,
+			accountId: userExist.accountId,
+			type: userExist.type,  
+			email: userExist.email,
+		};
+		const payload = jwt.sign(payload, config.TOKEN_SECRETE, {
+			expiresIn:"30m",
+		});
+		userExist.refreshToken = [...userExist.refreshToken, payload]
+		userExist.save();
+		// send recovery email
+		res.status(200).json({msg: "Recovery email sent successfully"})
+	} catch (error) {
+		next(error)
+	}
+}
