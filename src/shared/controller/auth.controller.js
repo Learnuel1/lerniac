@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const config = require("../../config/env");
 const { removeAuth } = require("../../utils/seeData");
 const { META } = require("../../utils/actions");
+const { default: mongoose } = require("mongoose");
 
 exports.login = async (req, res, next) => {
 	try {
@@ -58,7 +59,7 @@ exports.login = async (req, res, next) => {
 			expiresIn: `${req.body?.rememberMe ? '7m' : '7m'}`,
 		});
 		 
-		res.clearCookie('len_iac')
+		res.clearCookie('leRn_iac')
 		let newRefreshTokenArray = [];
 		if (token)
 			newRefreshTokenArray = exist.refreshToken.filter(
@@ -76,7 +77,7 @@ exports.login = async (req, res, next) => {
 			token:newToken,
 			refreshToken: newRefreshToken,
 		});
-		res.cookie('len_iac', newToken, {
+		res.cookie('leRn_iac', newToken, {
 			httpOnly: false,
 			secure: true,
 			sameSite: 'none',
@@ -90,24 +91,24 @@ exports.login = async (req, res, next) => {
 
 
 exports.logout = async (req, res, next) => {
-	try {
-		let token = req.token; 
-		if (!token)
+	try { 
+		const {refreshToken} = req.body;
+		if (!refreshToken)
 			return next(APIError.unauthenticated('You need to login first'));
-		const payload = jwt.decode(token, config.TOKEN_SECRETE);
-		const isUser = await userExistById(new mongoose.Types.ObjectId(payload.id));
-		if (!isUser) return next(APIError.notFound(`user does not exist`));
-		if (isUser?.error) return next(APIError.badRequest(isUser?.error));
+		const isUser = await userExistByToken(refreshToken);
+		if (!isUser) return next(APIError.unauthenticated());
+		if (isUser?.error) return next(APIError.badRequest(isUser.error));
+		const payload = jwt.decode(refreshToken, config.REFRESH_TOKEN_SECRETE);
 		if (isUser.role === CONSTANTS.ACCOUNT_TYPE_OBJ.student) {
 			isUser.refreshToken = [];
 			isUser.save();
 		} else {
-			const refreshTokenArr = isUser.refreshToken.filter((rt) => rt !== token);
+			const refreshTokenArr = isUser.refreshToken.filter((rt) => rt !== refreshToken);
 			isUser.refreshToken = [...refreshTokenArr];
 			isUser.save();
 		}
 		logger.info('Logout successful', { service: META.AUTH });
-		res.clearCookie('grub_ex');
+		res.clearCookie('leRn_iac');
 		res
 			.status(200)
 			.json({ success: true, msg: 'You have successfully logged out' });
