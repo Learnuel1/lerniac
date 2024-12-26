@@ -113,3 +113,25 @@ verified: z.boolean({
 type: z.enum(CONSTANTS.ACCOUNT_TYPE)
 .default(CONSTANTS.ACCOUNT_TYPE_OBJ.student)
 })
+
+exports.ZResetPassword = z.object({
+  password: z.string({
+    description: "Password",
+    required_error: "Password is required"
+  })
+  .min(8)
+  .trim(),
+})
+
+exports.ZUpdatePassword = z.object({
+  currentPassword: z.string({
+    description: "Current password",
+    required_error: "Current password is required",
+  })
+  .min(8)
+  .trim(),
+  newPassword: z.string({
+    description: "New password",
+    required_error: "New password is required"
+  })
+})

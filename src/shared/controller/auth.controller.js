@@ -117,7 +117,7 @@ exports.logout = async (req, res, next) => {
 	}
 };
 
-exports.resetPassword = async (req, res, next) => {
+exports.forgetPassword = async (req, res, next) => {
 	try {
 		 const info = {}
 		 for (let key in req.body){
@@ -146,6 +146,15 @@ exports.resetPassword = async (req, res, next) => {
 		userExist.save();
 		// send recovery email
 		res.status(200).json({msg: "Recovery email sent successfully"})
+	} catch (error) {
+		next(error)
+	}
+}
+
+exports.resetPassword = async (req, res, next) => {
+	try {
+		
+		// add strong password validator
 	} catch (error) {
 		next(error)
 	}
