@@ -2,7 +2,7 @@ require("dotenv").config();
 const config = {
 DB_URI: process.env.DB_URI,
 LOCAL_DB_URL:process.env.LOCAL_DB_URL,
-SERVER_PORT: process.env.PORT,
+SERVER_PORT: process.env.SERVER_PORT,
 FRONTEND_ORIGIN_URL: process.env.FRONTEND_ORIGIN_URL,
 TOKEN_SECRETE: process.env.TOKEN_SECRETE,
 REFRESH_TOKEN_SECRETE: process.env.REFRESH_TOKEN_SECRETE,

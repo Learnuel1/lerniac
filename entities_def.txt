@@ -1,16 +1,39 @@
-Account
--_id              -> ObjectId
--accountId        -> String 
-- firstName       -> String 
-- lastName        -> String
-- otherName       -> String
--type             -> ["admin", "teacher", "student"]
-                     id:  -> String
-                     id:  -> String
-- createdAt        -> Date
-- updatedAt        -> Date
-- email            -> String
-- phone            -> String
-- plan             -> [String]
-- refreshToken     -> [String]
+Account 
+- _id               -> ObjectId
+- accountId         -> String
+- firstName         -> String
+- lastName          -> String
+- otherName         -> String
+- type              -> ["admin", "teacher", "student"]
+- profile            -{
+                      id:   -> String
+                      url:  -> String
+                      }
+- createAt          -> Date
+- updatedAt         -> Date
+- email              -> String
+- phone             -> String
+- plan              -> [String]
+- refreshToken      -> [String]
+
+Question
+- _id             -> ObjectId
+- questionId      -> String
+- year            -> Number
+- type            -> enum ["practical", "theory", "objective"]
+- exam            -> enum ["WAEC", "JAMB", "NECO"]
+- option          -> [
+                    { A:  -> String
+                      B:  -> String
+                      C:  -> String
+                      D:  -> String
+                    }
+                ],
+- answer          -> String
+- accountId       -> Account(ObjectId)
+- question        -> String
+- image           -> []
+- questionNumber  -> Number
+- createAt        -> Date
+- updatedAt       -> Date
 

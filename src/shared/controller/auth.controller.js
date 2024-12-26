@@ -1,5 +1,5 @@
 const { compareSync } = require("bcryptjs");
-const { userExistByMail, userExistById, userExistByToken } = require("../../services");
+const { userExistByMail, userExistById, userExistByToken, userExistByPhone } = require("../../services");
 const { APIError } = require("../../utils/apiError");
 const { CONSTANTS } = require("../../config");
 const buildRes = require("../../utils/seeData")
@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 const config = require("../../config/env");
 const { removeAuth } = require("../../utils/seeData");
 const { META } = require("../../utils/actions");
+const { default: mongoose } = require("mongoose");
 
 exports.login = async (req, res, next) => {
 	try {
@@ -58,7 +59,7 @@ exports.login = async (req, res, next) => {
 			expiresIn: `${req.body?.rememberMe ? '7m' : '7m'}`,
 		});
 		 
-		res.clearCookie('len_iac')
+		res.clearCookie('leRn_iac')
 		let newRefreshTokenArray = [];
 		if (token)
 			newRefreshTokenArray = exist.refreshToken.filter(
@@ -76,7 +77,7 @@ exports.login = async (req, res, next) => {
 			token:newToken,
 			refreshToken: newRefreshToken,
 		});
-		res.cookie('len_iac', newToken, {
+		res.cookie('leRn_iac', newToken, {
 			httpOnly: false,
 			secure: true,
 			sameSite: 'none',
@@ -87,27 +88,25 @@ exports.login = async (req, res, next) => {
 		next(error);
 	}
 };
-
-
 exports.logout = async (req, res, next) => {
-	try {
-		let token = req.token; 
-		if (!token)
-			return next(APIError.unauthenticated('You need to login first'));
-		const payload = jwt.decode(token, config.TOKEN_SECRETE);
-		const isUser = await userExistById(new mongoose.Types.ObjectId(payload.id));
-		if (!isUser) return next(APIError.notFound(`user does not exist`));
-		if (isUser?.error) return next(APIError.badRequest(isUser?.error));
+	try { 
+		const {refreshToken} = req.body;
+		if (!refreshToken)
+			return next(APIError.unauthenticated('Refresh token is required'));
+		const isUser = await userExistByToken(refreshToken);
+		if (!isUser) return next(APIError.unauthenticated());
+		if (isUser?.error) return next(APIError.badRequest(isUser.error));
+		const payload = jwt.decode(refreshToken, config.REFRESH_TOKEN_SECRETE);
 		if (isUser.role === CONSTANTS.ACCOUNT_TYPE_OBJ.student) {
 			isUser.refreshToken = [];
 			isUser.save();
 		} else {
-			const refreshTokenArr = isUser.refreshToken.filter((rt) => rt !== token);
+			const refreshTokenArr = isUser.refreshToken.filter((rt) => rt !== refreshToken);
 			isUser.refreshToken = [...refreshTokenArr];
 			isUser.save();
 		}
 		logger.info('Logout successful', { service: META.AUTH });
-		res.clearCookie('grub_ex');
+		res.clearCookie('leRn_iac');
 		res
 			.status(200)
 			.json({ success: true, msg: 'You have successfully logged out' });
@@ -116,3 +115,34 @@ exports.logout = async (req, res, next) => {
 		next(error);
 	}
 };
+
+exports.resetPassword = async (req, res, next) => {
+	try {
+		 const info = {}
+		 for (let key in req.body){
+			info[key] = req.body[key];
+			break;
+		 }
+		if(!info) return next(APIError.badRequest("Email or phone is required"));
+		let userExist = await userExistByMail(info?.email);
+		if(!userExist) userExist = await userExistByPhone(info?.phone)
+		if(!userExist) return next(APIError.notFound("Account not found"));
+		logger.info("Account found", {service: META.AUTH})
+		// generate token for recovery link
+		payload = {
+			id: userExist._id,
+			accountId: userExist.accountId,
+			type: userExist.type,  
+			email: userExist.email,
+		};
+		const payload = jwt.sign(payload, config.TOKEN_SECRETE, {
+			expiresIn:"30m",
+		});
+		userExist.refreshToken = [...userExist.refreshToken, payload]
+		userExist.save();
+		// send recovery email
+		res.status(200).json({msg: "Recovery email sent successfully"})
+	} catch (error) {
+		next(error)
+	}
+}
