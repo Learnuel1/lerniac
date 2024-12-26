@@ -9,6 +9,7 @@ const config = require("../../config/env");
 const { removeAuth } = require("../../utils/seeData");
 const { META } = require("../../utils/actions");
 const { default: mongoose } = require("mongoose");
+const { isValidEmail, isPhoneNumberValid } = require("../../utils/generator");
 
 exports.login = async (req, res, next) => {
 	try {
@@ -123,8 +124,11 @@ exports.resetPassword = async (req, res, next) => {
 			info[key] = req.body[key];
 			break;
 		 }
+		if(Object.keys(info).length === 0) return next(APIError.badRequest("Email or Phone is required"))
 		if(!info) return next(APIError.badRequest("Email or phone is required"));
+		if(info?.email && !isValidEmail(info?.email)) return next(APIError.badRequest("Invalid email"))
 		let userExist = await userExistByMail(info?.email);
+		if(info?.phone && !isPhoneNumberValid(info?.info)) return next(APIError.badRequest("Invalid Phone number"))
 		if(!userExist) userExist = await userExistByPhone(info?.phone)
 		if(!userExist) return next(APIError.notFound("Account not found"));
 		logger.info("Account found", {service: META.AUTH})
