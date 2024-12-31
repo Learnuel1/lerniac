@@ -80,15 +80,11 @@ phone: z.string({
   invalid_type_error: "phone number is invalid"
 })
 .min(11)
+.max(15)
 .trim()
-.max(15),
-plan: z.string({
-  description: "Account Plan",
-  required_error: "Account plan is required",
-  invalid_type_error: "plan is invalid"
-})
-.default("student")
-.isOptional(),
+.optional(),
+plan: z.enum(CONSTANTS.PLAN)
+.default(CONSTANTS.PLAN_OBJ.fee),
 school: z.string({
   description: "School name",
   required_error: "School name is required",

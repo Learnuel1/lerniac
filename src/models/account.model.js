@@ -42,7 +42,9 @@ const AccountSchema = Schema({
     index: true,
   },
   plan: {
-    type: [String],
+    type: String,
+    enum: CONSTANTS.PLAN,
+    default: CONSTANTS.PLAN_OBJ.fee,
   },
   refreshToken: {
     type: [String]

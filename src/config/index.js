@@ -11,4 +11,10 @@ exports.CONSTANTS = {
     teacher: "teacher",
      student: "student"
   },
+  PLAN: ["Free", "School", "Premium"],
+  PLAN_OBJ : {
+    fee: "Free",
+  school: "School",
+  premium: "Premium",
+  }
 }
