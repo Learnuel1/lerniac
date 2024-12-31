@@ -7,9 +7,11 @@ const { APIError } = require("../../utils/apiError");
 exports.register = async (req, res, next) => {
   try {
     let infoExist = await userExistByMail(req.body.email);
-    if(infoExist) return next(APIError.badRequest(`${req.body.email} already exist`));
+    if(infoExist && infoExist !== null) return next(APIError.badRequest(`${req.body.email} already exist`))
+      else if(req.body?.phone){
     infoExist = await userExistByPhone(req.body.phone);
-    if(infoExist) return next(APIError.badRequest(`${req.body.phone} already exist`))
+    if(infoExist && infoExist !== null) return next(APIError.badRequest(`${req.body.phone} already exist`))
+    }
     const {password} = req.body;
     const hashedPassword = hashSync(password, 10);
     req.body.password = hashedPassword;

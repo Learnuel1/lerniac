@@ -38,8 +38,9 @@ const AccountSchema = Schema({
     type: String,
     require: true,
     trim: true,
-    unique: true,
+    // unique: true,
     index: true,
+    sparse: true,
   },
   plan: {
     type: String,

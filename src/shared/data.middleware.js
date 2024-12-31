@@ -6,6 +6,7 @@ module.exports = {
     return async (req, res, next) => {
       try {
         if(!schema) return next(APIError.badRequest("Schema name is required"));
+        if (!Schemas[schema]) return next(APIError.badRequest("Invalid schema name"));
         if(schema === "ZAccountSchema"){
           req.body.accountId = shortIdGen(17);
           if(req.body?.phone){

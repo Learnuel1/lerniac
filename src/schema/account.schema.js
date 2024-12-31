@@ -92,7 +92,7 @@ school: z.string({
 }) 
 .min(5)
 .trim()
-.isOptional(),
+.optional(),
 schoolAbbreviation: z.string({
   description: "School abbreviation",
   required_error: "School abbreviation is required",
@@ -100,7 +100,7 @@ schoolAbbreviation: z.string({
 }) 
 .min(2)
 .trim()
-.isOptional(),
+.optional(),
 verified: z.boolean({
   description: "Account status",
   required_error: "Account status is required",
