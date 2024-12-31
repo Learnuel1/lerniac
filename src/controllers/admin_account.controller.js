@@ -28,6 +28,7 @@ exports.defaultAdminAccount = async () => {
       phoneNumber: config.ADMIN_NUMBER,
       type: CONSTANTS.ACCOUNT_TYPE_OBJ.admin, 
       accountId: shortIdGen(17),
+      plan : CONSTANTS.PLAN_OBJ.premium,
     } 
     let account = await createAccount(info);
     if(!account) return logger.info("Admin Account creation failed", {

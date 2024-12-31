@@ -4,7 +4,7 @@ Account
 - firstName         -> String
 - lastName          -> String
 - otherName         -> String
-- type              -> ["admin", "teacher", "student"]
+- type              -> enum["admin", "teacher", "student"]
 - profile            -{
                       id:   -> String
                       url:  -> String
@@ -13,7 +13,7 @@ Account
 - updatedAt         -> Date
 - email              -> String
 - phone             -> String
-- plan              -> [String]
+- plan              -> enum["Free", "School", "Premium"]
 - refreshToken      -> [String]
 
 Question
