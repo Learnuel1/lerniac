@@ -16,6 +16,14 @@ Account
 - plan              -> enum["Free", "School", "Premium"]
 - refreshToken      -> [String]
 
+Subject 
+- _id               -> ObjectId
+- subjectId         -> String
+- name              -> String
+- accountId         -> Account(_id)
+- createAt          -> Date
+- updatedAt         -> Date
+
 Question
 - _id             -> ObjectId
 - questionId      -> String
@@ -34,6 +42,8 @@ Question
 - question        -> String
 - image           -> []
 - questionNumber  -> Number
+- status          -> enum ["private", "public"]
+- subject         -> Subject(_id)
 - createAt        -> Date
 - updatedAt       -> Date
 
