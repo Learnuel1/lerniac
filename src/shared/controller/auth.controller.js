@@ -17,7 +17,7 @@ exports.login = async (req, res, next) => {
 		if (!token) token = req.headers?.authorization?.split(' ')[1];
 		if (!token) token = req.headers?.cookie?.split('=')[1];
 		const { email, password } = req.body;
-		const exist = await userExistByMail(email);
+		const exist = await userExistByMail(email.toLowerCase());
 		if (!exist) return next(APIError.notFound('User does not exist', 404));
 		if (exist.error) return next(APIError.customError(exist.error, 400));
 		if (!compareSync(password, exist.password))

@@ -6,7 +6,8 @@ const { APIError } = require("../../utils/apiError");
 
 exports.register = async (req, res, next) => {
   try {
-    let infoExist = await userExistByMail(req.body.email);
+    let infoExist = await userExistByMail(req.body.email.toLowerCase());
+
     if(infoExist && infoExist !== null) return next(APIError.badRequest(`${req.body.email} already exist`))
       else if(req.body?.phone){
     infoExist = await userExistByPhone(req.body.phone);

@@ -29,6 +29,7 @@ const AccountSchema = Schema({
     trim: true,
     unique: true,
     index: true,
+    lowercase: true,
   },
   password: {
     type: String,
