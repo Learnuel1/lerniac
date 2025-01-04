@@ -106,8 +106,7 @@ verified: z.boolean({
   required_error: "Account status is required",
 })
 .default(false),
-type: z.enum(CONSTANTS.ACCOUNT_TYPE)
-.default(CONSTANTS.ACCOUNT_TYPE_OBJ.student)
+type: z.enum(CONSTANTS.ACCOUNT_TYPE) 
 })
 
 exports.ZResetPassword = z.object({
