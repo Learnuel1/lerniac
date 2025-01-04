@@ -1,6 +1,7 @@
 const AccountModule = require("./account.service");
 const QuestionModule = require("./question.service")
 const TemporalModule = require("./temporal.service")
+const SubjectModule = require("./subject.service")
 //ACCOUNT SECTION
 exports.userExistByMail = async(email) =>  await AccountModule.emailExist(email);
 exports.userExistByPhone = async(email) =>  await AccountModule.phoneExist(email);
@@ -20,3 +21,9 @@ exports.findTempTokenByToken = async (token) => await TemporalModule.findByToken
 exports.findTempTokenById = async (id) => await TemporalModule.findById(id);
 exports.deleteTempTokenById = async (id) => await TemporalModule.deleteById(id);
 exports.deleteAllTempTokenByAcctId = async (accountId) => await TemporalModule.deleteAllTempById(accountId);
+
+// SUBJECT SECTION
+exports.createSubject = async (subject) => await SubjectModule.createSubject(subject);
+exports.getSubjects = async () => await SubjectModule.getSubjects();
+exports.getSubjectsByUser = async (accountId) => await SubjectModule.getSubjectsByUser(accountId);
+exports.deleteSubject = async (subjectId, accountId) => await SubjectModule.deleteSubject(subjectId, accountId);

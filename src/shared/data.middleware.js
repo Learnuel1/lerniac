@@ -13,7 +13,12 @@ module.exports = {
             if(!isPhoneNumberValid(req.body.phone)) return next(APIError.badRequest("invalid phone number"))
           }
         } 
+        if(schema === "ZSubjectSchema"){
+          req.body.accountId = req.user;
+          req.body.subjectId = shortIdGen(10);
+        }
         Schemas[schema].safeParse(req.body); 
+        console.log(req.body)
         next()
       } catch (error) {
         next(error)
