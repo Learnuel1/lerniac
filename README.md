@@ -63,6 +63,7 @@ Read more about it here [Commit Lint Doc](https://www.conventionalcommits.org/en
 
 
 ## FOLDER STRUCTURE
+```
 lerniac/
 src
 ├───config
@@ -78,3 +79,4 @@ src
 │   └───controller
 ├───utils
 └───views
+```
