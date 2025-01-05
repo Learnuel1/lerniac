@@ -13,7 +13,7 @@ const { isValidEmail, isPhoneNumberValid, shortIdGen } = require("../../utils/ge
 
 exports.login = async (req, res, next) => {
 	try {
-		let token = req.cookies?.len_iac;
+		let token = req.cookies?.leRn_iac;
 		if (!token) token = req.headers?.authorization?.split(' ')[1];
 		if (!token) token = req.headers?.cookie?.split('=')[1];
 		const { email, password } = req.body;
