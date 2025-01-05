@@ -18,7 +18,6 @@ module.exports = {
           req.body.subjectId = shortIdGen(10);
         }
         Schemas[schema].safeParse(req.body); 
-        console.log(req.body)
         next()
       } catch (error) {
         next(error)

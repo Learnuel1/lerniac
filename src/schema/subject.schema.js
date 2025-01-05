@@ -9,8 +9,7 @@ exports.ZSubjectSchema = z.object({
     invalid_type_error: "Invalid Subject ID"
   })
   .min(2)
-  .max(50)
-  .default(() => shortIdGen(10)),
+  .max(50),
   name: z.string({
     description: "Subject Name",
     required_error: "Subject Name is required",
