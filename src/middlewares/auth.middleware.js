@@ -13,7 +13,7 @@ const userRequired = async (req, res, next) => {
     const isUser = await userExistById(new ObjectId(payload.id));
     if (!isUser) return next(APIError.notFound(`user does not exist`));
     if (isUser?.error) return next(APIError.badRequest(isUser?.error));
-    req.user = payload.id;
+    req.user = new ObjectId(payload.id);
     req.userId = payload.userId; 
     req.userType = payload.type;
     req.firstName = isUser.firstName;

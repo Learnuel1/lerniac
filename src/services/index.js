@@ -26,4 +26,5 @@ exports.deleteAllTempTokenByAcctId = async (accountId) => await TemporalModule.d
 exports.createSubject = async (subject) => await SubjectModule.createSubject(subject);
 exports.getSubjects = async () => await SubjectModule.getSubjects();
 exports.getSubjectsByUser = async (accountId) => await SubjectModule.getSubjectsByUser(accountId);
-exports.deleteSubject = async (subjectId, accountId) => await SubjectModule.deleteSubject(subjectId, accountId);
+exports.deleteSubject = async (subjectId, accountId, type) => await SubjectModule.deleteSubject(subjectId, accountId, type);
+exports.updateSubject = async (subjectId, subject, type) => await SubjectModule.update(subjectId, subject, type);
