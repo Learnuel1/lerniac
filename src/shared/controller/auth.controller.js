@@ -196,3 +196,73 @@ exports.resetPassword = async (req, res, next) => {
 		next(error)
 	}
 }
+
+exports.handleRefreshToken = async (req, res, next) => {
+	let token = req.cookies?.leRn_iac;
+	if (!token) token = req.headers?.authorization?.split(' ')[1];
+	if (!token) token = req.headers?.cookie?.split('=')[1];
+	if (!token) return next(APIError.unauthenticated());
+	const { refreshToken } = req.body;
+	res.clearCookie('leRn_iac', {
+		httpOnly: true,
+		sameSite: 'None',
+		secure: true,
+	});
+	if (!refreshToken)
+		return next(APIError.badRequest('RefreshToken is required'));
+	const foundUser = await userExistByToken(refreshToken);
+	// Detected refresh toke reuse
+	if (!foundUser) {
+		const check = jwt.decode(token, config.TOKEN_SECRETE);
+		if (!check) return next(APIError.unauthenticated());
+		const usedToken = await userExistById(check.id);
+		// usedToken.refreshToken = [];
+		// usedToken.save();
+		logger.info('Token reuse detected', { service: META.AUTH });
+		return next(APIError.customError("Invalid Token", 403));
+	}
+	const newRefreshTokenArr = foundUser.refreshToken.filter(
+		(rt) => rt !== token
+	);
+	jwt.verify(
+		refreshToken,
+		config.REFRESH_TOKEN_SECRETE,
+		async (err, decoded) => {
+			if (err) {
+				foundUser.refreshToken = [...newRefreshTokenArr];
+				foundUser.save();
+			}
+			if (err || foundUser._id.toString() !== decoded.id)
+				return next(APIError.customError(ERROR_FIELD.JWT_EXPIRED, 403));
+			const payload = {
+				id: foundUser._id,
+				userId: foundUser.userId,
+				type: foundUser.type,
+				role: foundUser.role,
+				firstName: foundUser.firstName,
+				lastName: foundUser.lastName,
+				email: foundUser.email,
+				onBoarded: foundUser.role === CONSTANTS.ACCOUNT_TYPE_OBJ.admin ? true : foundUser?.onBoarded
+			};
+			const token = jwt.sign(payload, config.TOKEN_SECRETE, {
+				expiresIn: '5h',
+			});
+			const newRefreshToken = jwt.sign(payload, config.REFRESH_TOKEN_SECRETE, {
+				expiresIn: '10h',
+			});
+			foundUser.refreshToken = [...newRefreshTokenArr, token];
+			foundUser.save();
+			logger.info('Refresh Token generated successfully', {
+				service: META.AUTH,
+			});
+			res.cookie('leRn_iac', token, {
+				httpOnly: true,
+				sameSite: 'None',
+				secure: true,
+			});
+			res
+				.status(200)
+				.json({ success: true, token, refreshToken: newRefreshToken });
+		}
+	);
+};
