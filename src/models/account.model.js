@@ -69,7 +69,11 @@ const AccountSchema = Schema({
   schoolAbbreviation: {
     type: String,
     trim: true
-  }
+  },
+  website: {
+    type: String,
+    trim: true,
+  },
 }, {timestamps: true});
 const AccountModel = model("Account", AccountSchema);
 module.exports = AccountModel;

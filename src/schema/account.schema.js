@@ -106,7 +106,12 @@ verified: z.boolean({
   required_error: "Account status is required",
 })
 .default(false),
-type: z.enum(CONSTANTS.ACCOUNT_TYPE) 
+type: z.enum(CONSTANTS.ACCOUNT_TYPE),
+password: z.string({
+  description: "Account password",
+  required_error: "Account password is required",
+  invalid_type_error: "Invalid password" 
+}).min(6,{message: "Password must be at least 6 characters long"}).trim(),
 })
 
 exports.ZResetPassword = z.object({
