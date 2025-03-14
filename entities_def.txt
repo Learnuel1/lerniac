@@ -28,7 +28,7 @@ Question
 - _id             -> ObjectId
 - questionId      -> String
 - year            -> Number
-- type            -> enum ["practical", "theory", "objective"]
+- type            -> enum ["practical", "theory", "objective", "alternative to        practical"]
 - exam            -> enum ["WAEC", "JAMB", "NECO"]
 - option          -> [
                     { A:  -> String
@@ -38,14 +38,17 @@ Question
                     }
                 ],
 - answer          -> String
-- accountId       -> Account(ObjectId)
+- instruction     -> String
+- account       -> Account(ObjectId)
 - question        -> String
-- image           -> []
+- image           -> [ {id -> String  url -> String}]
 - questionNumber  -> Number
 - status          -> enum ["private", "public"]
+- subjectId       -> String
 - subject         -> Subject(_id)
 - createAt        -> Date
 - updatedAt       -> Date
+
 
 Temporal
 - _id             -> ObjectId
