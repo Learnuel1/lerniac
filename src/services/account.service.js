@@ -42,3 +42,17 @@ exports.existByToken =async (refreshToken) => {
     return{error}
   }
 }
+exports.update = async (accountId, info) => {
+  try{
+    return await AccountModel.findOneAndUpdate({_id: accountId}, {...info}) ; 
+  } catch (error) {
+    return {error: error.message}
+  }
+}
+exports.accountInfo = async (accountId) => {
+  try {
+    return await AccountModel.findOne({_id: accountId}).select("-password -refreshToken -_id -__v -createdAt -updatedAt");
+  }catch (error) {
+    return {error: error.message}
+  } 
+}

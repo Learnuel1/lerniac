@@ -5,11 +5,11 @@ exports.CORS_WHITE_LIST = [""];
 
 
 exports.CONSTANTS = {
-  ACCOUNT_TYPE: ["admin", "teacher", "student"],
+  ACCOUNT_TYPE: ["Admin", "Teacher", "Student"],
   ACCOUNT_TYPE_OBJ: {
-    admin: "admin", 
-    teacher: "teacher",
-     student: "student"
+    admin: "Admin", 
+    teacher: "Teacher",
+     student: "Student"
   },
   PLAN: ["Free", "School", "Premium"],
   PLAN_OBJ : {
@@ -17,10 +17,10 @@ exports.CONSTANTS = {
   school: "School",
   premium: "Premium",
   },
-  QUESTION_STATUS: ["private", "public"],
+  QUESTION_STATUS: ["Private", "Public"],
   QUESTION_STATUS_OBJ: {
-    pending: "private",
-    approved: "public", 
+    pending: "Private",
+    approved: "Public", 
   },
   EXAM_TYPE: ["WAEC", "JAMB", "NECO"],
   EXAM_TYPE_OBJ: {

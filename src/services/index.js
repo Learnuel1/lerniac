@@ -9,7 +9,8 @@ exports.userExistByType = async(email) =>  await AccountModule.type(email);
 exports.createAccount = async (info) => await AccountModule.create(info);
 exports.userExistById = async (accountId) => await AccountModule.existById(accountId);
 exports.userExistByToken = async (refreshToken) => await AccountModule.existByToken(refreshToken);
-
+exports.updateAccount = async (accountId, info) => await AccountModule.update(accountId, info);
+exports.getAccountInfo = async (accountId) => await AccountModule.accountInfo(accountId);
 
 // QUESTION SECTION
 exports.uploadQuestion = async (question) => await QuestionModule.create(question);
