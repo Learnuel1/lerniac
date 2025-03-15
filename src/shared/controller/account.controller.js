@@ -1,9 +1,8 @@
-const { hashSync } = require("bcryptjs");
+const { hashSync, compareSync } = require("bcryptjs");
 const logger = require("../../logger");
-const { createAccount, userExistByMail, userExistByPhone, getAccountInfo, updateAccount } = require("../../services");
+const { createAccount, userExistByMail, userExistByPhone, getAccountInfo, updateAccount, userExistById } = require("../../services");
 const { META } = require("../../utils/actions");
-const { APIError } = require("../../utils/apiError");
-const { validateRequestData } = require("../data.middleware");
+const { APIError } = require("../../utils/apiError"); 
 const { isPhoneNumberValid } = require("../../utils/generator");
 
 exports.register = async (req, res, next) => {
@@ -49,4 +48,23 @@ exports.updateInfo = async (req, res, next) => {
   } catch (error) {
     next(error)
   }
+}
+exports.updatePassword = async (req, res, next) => {  
+ try{
+  const {currentPassword, newPassword} = req.body;
+  if(!currentPassword) return next(APIError.badRequest("current password is required"));
+  if(!newPassword) return next(APIError.badRequest("New password is required"));
+  const info = await userExistById(req.user);
+  if(!info) return next(APIError.notFound("Account not found"));
+  if(info?.error) return next(APIError.notFound(info.error));
+  if(!compareSync(currentPassword, info.password)) return next(APIError.notFound("Incorrect password"));
+  const password = hashSync(newPassword, 10);
+  if(currentPassword === newPassword) return next(APIError.badRequest("New password cannot be the same as the old password"));
+   info.password = password
+  info.save();
+  logger.info("Password updated successfully", {service:META.ACCOUNT});
+  res.status(200).json({success: true, msg: "Password updated successfully"})
+ } catch (error) {
+  next(error);
+ }
 }

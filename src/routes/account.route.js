@@ -4,7 +4,7 @@ const { Controllers } = require("../utils");
 
 const userRoutes = require("express").Router();
 const routes = require("express").Router();
-routes.put("/", validateRequestData("ZUpdateAccountSchema"), Controllers.accountController.updateInfo).get("/", Controllers.accountController.userInfo);
+routes.put("/", validateRequestData("ZUpdateAccountSchema"), Controllers.accountController.updateInfo).get("/", Controllers.accountController.userInfo).patch("/password",  Controllers.accountController.updatePassword);
 userRoutes.use("/", userRequired, routes);
 module.exports = {
     userRoutes,
