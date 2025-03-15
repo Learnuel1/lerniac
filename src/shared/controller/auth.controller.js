@@ -233,7 +233,7 @@ exports.handleRefreshToken = async (req, res, next) => {
 				foundUser.save();
 			}
 			if (err || foundUser._id.toString() !== decoded.id)
-				return next(APIError.customError(ERROR_FIELD.JWT_EXPIRED, 403));
+				return next(APIError.customError("jwt expired", 403));
 			const payload = {
 				id: foundUser._id,
 				userId: foundUser.userId,

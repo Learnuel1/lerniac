@@ -3,6 +3,8 @@ const logger = require("../../logger");
 const { createAccount, userExistByMail, userExistByPhone, getAccountInfo, updateAccount } = require("../../services");
 const { META } = require("../../utils/actions");
 const { APIError } = require("../../utils/apiError");
+const { validateRequestData } = require("../data.middleware");
+const { isPhoneNumberValid } = require("../../utils/generator");
 
 exports.register = async (req, res, next) => {
   try {
@@ -37,7 +39,8 @@ exports.userInfo = async (req, res, next) => {
   }
 }
 exports.updateInfo = async (req, res, next) => {
-  try {
+  try {  
+    if(req.body?.phone && !isPhoneNumberValid(req.body.phone)) return next(APIError.badRequest("Invalid phone number"));
     const info = await updateAccount(req.user, req.body);
     if(!info) return next(APIError.badRequest("Update failed, try again"));
     if(info?.error) return next(APIError.badRequest(info.error));
