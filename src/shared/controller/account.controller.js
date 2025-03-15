@@ -1,6 +1,6 @@
 const { hashSync } = require("bcryptjs");
 const logger = require("../../logger");
-const { createAccount, userExistByMail, userExistByPhone } = require("../../services");
+const { createAccount, userExistByMail, userExistByPhone, getAccountInfo, updateAccount } = require("../../services");
 const { META } = require("../../utils/actions");
 const { APIError } = require("../../utils/apiError");
 
@@ -21,6 +21,28 @@ exports.register = async (req, res, next) => {
     if(user?.error) return next(APIError.badRequest(user.error));
     logger.info("Account created successfully", {service: META.ACCOUNT});
     res.status(201).json({success: true, message: "Registration successful"})
+  } catch (error) {
+    next(error)
+  }
+}
+exports.userInfo = async (req, res, next) => {
+  try {
+    const info = await getAccountInfo(req.user);
+    if(!info) return next(APIError.notFound("Account not found"));
+    if(info?.error) return next(APIError.badRequest(info.error));
+    logger.info("Account info retrieved successfully", {service: META.ACCOUNT});
+    res.status(200).json({success: true, msg: "Found", data: info})
+  } catch (error) {
+    next(error)
+  }
+}
+exports.updateInfo = async (req, res, next) => {
+  try {
+    const info = await updateAccount(req.user, req.body);
+    if(!info) return next(APIError.badRequest("Update failed, try again"));
+    if(info?.error) return next(APIError.badRequest(info.error));
+    logger.info("Account info updated successfully", {service: META.ACCOUNT});
+    res.status(200).json({success: true, msg: "Update successful"})
   } catch (error) {
     next(error)
   }
